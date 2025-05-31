@@ -72,7 +72,11 @@ class Review:
         # Check the dictionary for  existing instance using the row's primary key
         review_id = row[0]
         if review_id in cls.all:
-            return cls.all[review_id]
+            review = cls.all[review_id]
+            review.year = row[1]
+            review.summary = row[2]
+            review.employee_id = row[3]
+            return review
         else:
             review = cls(row[1], row[2], row[3], review_id)
             cls.all[review_id] = review
@@ -117,3 +121,38 @@ class Review:
         rows = CURSOR.fetchall()
         return [cls.instance_from_db(row) for row in rows]
 
+
+    # ----------- Property Validators -----------
+
+    @property
+    def year(self):
+        return self._year
+
+    @year.setter
+    def year(self, value):
+        if isinstance(value, int) and value >= 2000:
+            self._year = value
+        else:
+            raise ValueError("Year must be an integer >= 2000.")
+
+    @property
+    def summary(self):
+        return self._summary
+
+    @summary.setter
+    def summary(self, value):
+        if isinstance(value, str) and value.strip():
+            self._summary = value
+        else:
+            raise ValueError("Summary must be a non-empty string.")
+
+    @property
+    def employee_id(self):
+        return self._employee_id
+
+    @employee_id.setter
+    def employee_id(self, value):
+        if isinstance(value, int) and Employee.find_by_id(value):
+            self._employee_id = value
+        else:
+            raise ValueError("employee_id must be a valid Employee ID.")
