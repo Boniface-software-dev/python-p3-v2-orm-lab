@@ -102,7 +102,12 @@ class Review:
     def delete(self):
         """Delete the table row corresponding to the current Review instance,
         delete the dictionary entry, and reassign id attribute"""
-        pass
+        sql = "DELETE FROM reviews WHERE id = ?"
+        CURSOR.execute(sql, (self.id,))
+        CONN.commit()
+        if self.id in type(self).all:
+            del type(self).all[self.id]
+        self.id = None
 
     @classmethod
     def get_all(cls):
