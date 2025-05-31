@@ -112,5 +112,8 @@ class Review:
     @classmethod
     def get_all(cls):
         """Return a list containing one Review instance per table row"""
-        pass
+        sql = "SELECT * FROM reviews"
+        CURSOR.execute(sql)
+        rows = CURSOR.fetchall()
+        return [cls.instance_from_db(row) for row in rows]
 
